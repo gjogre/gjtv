@@ -1,0 +1,35 @@
+[[apps]]
+name = "Kodi"
+exec = "kodi"
+icon = "icons/testcat.png"
+category = "Media"
+
+[[apps]]
+name = "Plex"
+exec = "plex-media-player"
+icon = "icons/testcat.png"
+category = "Media"
+
+[[apps]]
+name = "YouTube"
+exec = "chromium --app=https://www.youtube.com/tv"
+icon = "icons/testcat.png"
+category = "Media"
+
+[[apps]]
+name = "Firefox"
+exec = "firefox"
+icon = "icons/testcat.png"
+category = "Web"
+
+[[apps]]
+name = "Files"
+exec = "thunar"
+icon = "icons/testcat.png"
+category = "Utilities"
+
+[[apps]]
+name = "Shutdown"
+exec = "systemctl poweroff"
+icon = "icons/testcat.png"
+category = "Utilities"
