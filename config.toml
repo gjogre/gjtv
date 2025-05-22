@@ -24,12 +24,6 @@ category = "Web"
 
 [[apps]]
 name = "Files"
-exec = "thunar"
-icon = "icons/testcat.png"
-category = "Utilities"
-
-[[apps]]
-name = "Shutdown"
-exec = "systemctl poweroff"
+exec = "dolphin"
 icon = "icons/testcat.png"
 category = "Utilities"
