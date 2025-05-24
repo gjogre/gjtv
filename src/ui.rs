@@ -1,11 +1,15 @@
 use crate::app_config::AppConfig;
 use crate::components::AppTab;
 use bevy::prelude::*;
+use freedesktop_icons::lookup;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 pub fn setup_ui(mut commands: Commands, config: ResMut<AppConfig>, asset_server: Res<AssetServer>) {
     let current_tab = &config.tab_names[config.current_tab];
     let apps = &config.categories[current_tab];
 
+    let icon = lookup("firefox").find();
     commands
         .spawn((
             Node {
@@ -37,7 +41,11 @@ pub fn setup_ui(mut commands: Commands, config: ResMut<AppConfig>, asset_server:
                     children![
                         ImageNode {
                             color: Color::WHITE,
-                            image: asset_server.load(&app.icon),
+                            image: if app.icon.is_empty() {
+                                load_icon(&asset_server, &app.exec)
+                            } else {
+                                asset_server.load(&app.icon)
+                            },
                             texture_atlas: None,
                             flip_x: false,
                             flip_y: false,
@@ -49,4 +57,30 @@ pub fn setup_ui(mut commands: Commands, config: ResMut<AppConfig>, asset_server:
                 ));
             }
         });
+}
+
+fn load_icon(asset_server: &AssetServer, icon_name: &str) -> Handle<Image> {
+    if let Some(path) = lookup(icon_name).find() {
+        if let Some(asset_path) = copy_icon_to_assets(&path, icon_name) {
+            return asset_server.load(&asset_path);
+        }
+    }
+
+    asset_server.load("icons/testcat.png")
+}
+
+fn copy_icon_to_assets(system_icon_path: &PathBuf, icon_name: &str) -> Option<String> {
+    let ext = system_icon_path.extension()?.to_str()?;
+    let dest_dir = Path::new("assets/icons");
+    let dest_file = dest_dir.join(format!("{}.{}", icon_name, ext));
+
+    if dest_file.exists() {
+        return Some(format!("icons/{}.{}", icon_name, ext));
+    }
+
+    std::fs::create_dir_all(dest_dir).ok()?;
+
+    std::fs::copy(system_icon_path, &dest_file).ok()?;
+
+    Some(format!("icons/{}.{}", icon_name, ext))
 }
